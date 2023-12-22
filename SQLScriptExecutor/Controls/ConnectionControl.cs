@@ -1,4 +1,4 @@
-﻿
+
 using SQLScriptExecutor.Classes;
 using System;
 using System.Collections.Generic;
@@ -101,7 +101,8 @@ namespace SQLScriptExecutor.Controls
         private void FillCombo(ConnectionItem cnItem)
         {
             cmbAlias.Items.Clear();
-            CurrentConnections.ForEach(x => cmbAlias.Items.Add(x));
+            if(CurrentConnections != null)
+                CurrentConnections.ForEach(x => cmbAlias.Items.Add(x));
             if (cnItem == null)
             {
                 ClearControls();
@@ -123,7 +124,11 @@ namespace SQLScriptExecutor.Controls
         }
         private ConnectionItem ModifyConnection(bool isDelete)
         {
-            var cnItem = CurrentConnections.Find(x => x.Alias == txtAlias.Text.Trim());
+            ConnectionItem cnItem = null;
+            if(CurrentConnections != null)
+                cnItem = CurrentConnections.Find(x => x.Alias == txtAlias.Text.Trim());
+            else
+                CurrentConnections = new List<ConnectionItem>();
             if (cnItem != null)
             {
                 if (isDelete)
@@ -210,9 +215,12 @@ namespace SQLScriptExecutor.Controls
         }
         public void SetConnectionByAliasn(string cnn)
         {
-            var cnItem = CurrentConnections.Find(x => x.Alias == cnn);
-            if (cnItem != null)
-                cmbAlias.SelectedItem = cnItem;
+            if (CurrentConnections != null)
+            {
+                var cnItem = CurrentConnections.Find(x => x.Alias == cnn);
+                if (cnItem != null)
+                    cmbAlias.SelectedItem = cnItem;
+            }
         }
         #endregion
 
